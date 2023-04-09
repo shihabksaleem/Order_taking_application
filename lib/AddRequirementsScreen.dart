@@ -67,11 +67,10 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
 
   String dropDownItem = items.first;
   String dropDownItemRate = itemRates.first['itmprice'].toString();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    itemName.text = dropDownItem;
-    itemRate.text = dropDownItemRate;
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -88,34 +87,23 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                 isScrollControlled: true,
                 context: context,
                 builder: (context) => StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) =>
-                      Padding(
+                    builder: (BuildContext context, StateSetter setState) {
+                  itemName.text = dropDownItem;
+                  itemRate.text = dropDownItemRate;
+
+                  return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: 10,
-                            left: 10,
-                            right: 10,
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: 10,
+                          left: 10,
+                          right: 10,
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: Form(
+                        key: _formKey,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // TextField(
-                            //   decoration: const InputDecoration(
-                            //     focusedBorder: OutlineInputBorder(
-                            //       borderSide:
-                            //       BorderSide(color: Colors.blue, width: 2.0),
-                            //     ),
-                            //     enabledBorder: OutlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //           color: Color.fromARGB(255, 97, 61, 230),
-                            //           width: 2.0),
-                            //     ),
-                            //     hintText: 'Enter Your Item ',
-                            //   ),
-                            //   controller: itemName,
-                            // ),
                             DropdownButton(
                               value: dropDownItem,
                               items: items.map<DropdownMenuItem<String>>(
@@ -126,6 +114,8 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                                 );
                               }).toList(),
                               onChanged: (String? value) {
+                                itemName.text = dropDownItem;
+                                itemRate.text = dropDownItemRate;
                                 setState(() {
                                   dropDownItem = value!;
                                   dropDownItemRate = itemRates
@@ -141,8 +131,12 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                             const SizedBox(
                               height: 15,
                             ),
-                            TextField(
+                            TextFormField(
                               decoration: const InputDecoration(
+                                errorBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.red, width: 2.0),
+                                ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: Colors.blue, width: 2.0),
@@ -156,6 +150,12 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                               ),
                               keyboardType: TextInputType.number,
                               controller: itemQty,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a value';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(
                               height: 15,
@@ -195,25 +195,22 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                                       side: BorderSide(color: Colors.white)),
                                 ),
                                 onPressed: () {
-                                  shopsList[widget.shopIndex]['Requirements']
-                                      .add(
-                                    RequirementsModel(
-                                        itemName: itemName.text,
-                                        qty: double.parse(itemQty.text),
-                                        rate: double.parse(itemRate.text)),
-                                  );
-
-                                  // print("item added");
-                                  print(shopsList[widget.shopIndex]
-                                          ['Requirements']
-                                      .length);
-                                  getTotaAmount();
+                                  if (_formKey.currentState!.validate()) {
+                                    shopsList[widget.shopIndex]['Requirements']
+                                        .add(
+                                      RequirementsModel(
+                                          itemName: itemName.text,
+                                          qty: double.parse(itemQty.text),
+                                          rate: double.parse(itemRate.text)),
+                                    );
+                                    getTotaAmount();
+                                    Navigator.pop(context);
+                                  }
 
                                   setState(() {});
                                   itemName.clear();
                                   itemQty.clear();
                                   itemRate.clear();
-                                  Navigator.pop(context);
                                 },
                                 child: Text('Add'),
                               ),
@@ -222,8 +219,8 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
             )
           ],
@@ -349,31 +346,28 @@ class _AddRequirementsScreenState extends State<AddRequirementsScreen> {
                             ),
                             SizedBox(
                               width: 150,
-                              child: Flexible(
-                                child: TextField(
-                                  decoration: const InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.blue, width: 2.0),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Color.fromARGB(255, 97, 61, 230),
-                                          width: 2.0),
-                                    ),
-                                    hintText: '0.00 %',
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.blue, width: 2.0),
                                   ),
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) {
-                                    discount = double.parse(value);
-                                    getTotaAmount();
-
-                                    setState(() {
-                                      // discountController.text = value;
-                                    });
-                                  },
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Color.fromARGB(255, 97, 61, 230),
+                                        width: 2.0),
+                                  ),
+                                  hintText: '0.00 %',
                                 ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  discount = double.parse(value);
+                                  getTotaAmount();
+
+                                  setState(() {
+                                    // discountController.text = value;
+                                  });
+                                },
                               ),
                             ),
                           ],

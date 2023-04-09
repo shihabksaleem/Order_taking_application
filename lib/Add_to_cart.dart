@@ -16,11 +16,11 @@ class _orderplacedState extends State<orderplaced> {
   void initState() {
     super.initState();
     Timer(
-      Duration(seconds: 4),
+      Duration(seconds: 3),
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ShopListScreen(),
+          builder: (context) => const ShopListScreen(),
         ),
       ),
     );
@@ -39,8 +39,7 @@ class _orderplacedState extends State<orderplaced> {
               SizedBox(
                   height: 100,
                   width: 100,
-                  child: Lottie.network(
-                      'https://assets10.lottiefiles.com/packages/lf20_o3kwwgtn.json',
+                  child: Lottie.asset('assets/images/order_places.json',
                       repeat: false)),
               Text(
                 "Order Placed",

@@ -106,20 +106,23 @@ class _CartPageState extends State<CartPage> {
             },
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Total : ",
-              style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.w500, color: Shoptext),
-            ),
-            Text(
-              widget.subtotoal.toStringAsFixed(2),
-              style: TextStyle(
-                  fontSize: 30, fontWeight: FontWeight.bold, color: Shoptext),
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Total Amount : ",
+                style: TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.w500, color: Shoptext),
+              ),
+              Text(
+                widget.subtotoal.toStringAsFixed(2),
+                style: TextStyle(
+                    fontSize: 30, fontWeight: FontWeight.bold, color: Shoptext),
+              ),
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(20),
